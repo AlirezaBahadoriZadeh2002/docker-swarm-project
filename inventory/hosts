@@ -2,15 +2,13 @@
 127.0.0.1  ansible_connection=local
 
 [nodes]
-
-
+---
 
 [mgr1]
-
-
+---
 
 [mgr2]
-
-
+---
 
 [worker]
+---
