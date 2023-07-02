@@ -134,14 +134,9 @@
      - 7946/tcp
      - 4789/udp
      - 2377/tcp
-  tags: test66
 
 
 - name: Reload firewall
   systemd:
       name: firewalld
       state: reloaded
-  tags: test66
-
-
-
