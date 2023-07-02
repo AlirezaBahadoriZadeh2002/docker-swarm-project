@@ -3,9 +3,8 @@
   become: true
   tasks:
 
-
     - name: Join command for Worker
-      shell: docker swarm init --advertise-addr 192.168.56.16
+      shell: docker swarm init --advertise-addr "<<manager1_ip_address>>"
       register: swarm_worker_output
       changed_when: false
 
@@ -17,15 +16,10 @@
       debug:
         var: join_command_worker
 
-
-
-
-
     - name: Join command for Manager
       shell: 'docker swarm join-token manager | grep join'
       register: swarm_manager_output
       changed_when: false
-
 
     - name: Extract Join Command
       set_fact:
@@ -36,15 +30,10 @@
         var: join_command_manager
 
 
-
-
-
-
     - name: Save Output to File
       copy:
         content: "{{ join_command_worker }}"
         dest: "/home/worker.txt"
-
  
     - name: Copy File to Ansible Control Machine
       fetch:
@@ -52,15 +41,10 @@
         dest: /home/worker.txt
         flat: yes
 
-
-
-
-
     - name: Save Output to File
       copy:
         content: "{{ join_command_manager }}"
         dest: "/home/manager.txt"
-
 
     - name: Copy File to Ansible Control Machine
       fetch:
