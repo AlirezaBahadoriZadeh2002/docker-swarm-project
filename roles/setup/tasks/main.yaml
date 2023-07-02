@@ -142,6 +142,3 @@
       name: firewalld
       state: reloaded
   tags: test66
-
-
-
