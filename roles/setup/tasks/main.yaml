@@ -1,0 +1,147 @@
+---
+- name: install tools
+  apt:
+     name: "{{item}}"
+     state: present
+     update_cache: yes
+  loop:
+     - apt-transport-https
+     - ca-certificates
+     - curl
+     - gnupg-agent
+     - software-properties-common
+
+
+- name: add key
+  apt_key:
+       url: https://download.docker.com/linux/ubuntu/gpg
+       state: present
+
+
+- name: add docker repo
+  apt_repository:
+       repo: deb https://download.docker.com/linux/ubuntu bionic stable
+       state: present
+
+
+- name: install docker
+  apt:
+     name: "{{item}}"
+     state: latest
+     update_cache: yes
+  loop:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+  
+- name: strat docker 
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+
+- name: install Docker Compose
+  apt:
+    name: docker-compose
+    state: present
+    update_cache: true
+
+
+- name: creating an empty daemon.json
+  file:
+        path: "/etc/docker/daemon.json"
+        state: touch
+
+
+- name: create purpose file
+  template:
+        src: daemon.json.j2
+        dest: /etc/docker/daemon.json
+
+
+
+- name: Restart Docker service
+  become: true
+  systemd:
+    name: docker
+    state: restarted
+
+
+- name: Run whoami without become.
+  command: whoami
+  changed_when: false
+  become: false
+  register: whoami
+
+
+- name: Set a fact with the user name.
+  set_fact:
+      login_user: '{{ whoami.stdout }}'
+
+
+- name: Add the current user to 'docker' group
+  become: yes
+  user:
+      name: '{{ whoami.stdout }}'
+      groups: docker
+      append: yes
+
+
+- name: Reboot
+  shell: "sleep 1 && reboot"
+  async: 1
+  poll: 0
+  ignore_errors: yes
+
+
+
+- name: Wait for Connection module
+  wait_for_connection: 
+      timeout: 200
+      delay: 5
+      sleep: 5
+
+
+
+- name: After Reboot
+  debug:
+      msg: "After Reboot"
+      
+ 
+- name: Install Firewalld
+  apt:
+      name: firewalld
+      state: present
+
+
+- name: Enable Firewalld
+  systemd:
+      name: firewalld
+      enabled: yes
+      masked: no
+      state: started
+
+
+- name: Add ports to firewall
+  firewalld:
+      port: "{{ item }}"
+      permanent: true
+      state: enabled
+      immediate: true
+  loop:
+     - 7946/udp
+     - 7946/tcp
+     - 4789/udp
+     - 2377/tcp
+  tags: test66
+
+
+- name: Reload firewall
+  systemd:
+      name: firewalld
+      state: reloaded
+  tags: test66
+
+
+

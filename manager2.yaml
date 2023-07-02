@@ -1,0 +1,16 @@
+---
+- hosts: mgr2
+  tasks:
+    - name: Copy manager.txt  to Manager2
+      copy:
+        src: /home/manager.txt
+        dest: /home/manager.txt
+
+    - name: Copy Script to Manager2
+      copy:
+        src: /home/manager-command.sh
+        dest: /home/manager-command.sh
+        mode: 0755
+
+    - name: Run Script on Remote
+      script: /home/manager-command.sh

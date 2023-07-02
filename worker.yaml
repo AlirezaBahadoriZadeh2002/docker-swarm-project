@@ -1,0 +1,16 @@
+---
+- hosts: worker
+  tasks:
+    - name: Copy worker.txt  to Worker
+      copy:
+        src: /home/worker.txt
+        dest: /home/worker.txt
+
+    - name: Copy Script to worker
+      copy:
+        src: /home/worker-command.sh
+        dest: /home/worker-command.sh
+        mode: 0755
+
+    - name: Run Script on Remote
+      script: /home/worker-command.sh
