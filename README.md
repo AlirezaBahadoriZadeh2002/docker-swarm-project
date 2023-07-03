@@ -2,6 +2,6 @@
 
 
 
-# atsea sample shop 
+# atsea sample shop app
 
-Repo application: (https://github.com/dockersamples/atsea-sample-shop-app)
+Repo: (https://github.com/dockersamples/atsea-sample-shop-app)
