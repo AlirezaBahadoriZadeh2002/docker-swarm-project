@@ -6,6 +6,8 @@
 - run ansible playbook:
   
         ansible-playbook -i inventory/hosts docker-swarm.yaml
+  
+        
 
 # atsea sample shop app
 
